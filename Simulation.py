@@ -400,7 +400,7 @@ class Simulation(object):
         for i in range(0, len(self.objects)):
             #Now we can add these points to the list
             points[i] = self.objects[i].location
-        #now perform the nearest neghbor assessment by building a delauny triangulation
+        #now perform the nearest neghbor assessmentusing a KDTree
         tree = KDTree(points)
         #keep track of this as a network
         self.network = nx.Graph()

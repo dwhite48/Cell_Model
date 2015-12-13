@@ -2,7 +2,7 @@ from Simulation import *
 import sys
 from scipy.spatial.distance import euclidean
 import random as r
-from StemCellNN import *
+from StemCellODE import *
 from Gradient import Gradient
 import networkx as nx
 import simAnaylsisScriptOct4Nanog as sa

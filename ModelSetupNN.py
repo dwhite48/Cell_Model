@@ -53,10 +53,7 @@ if(__name__ == '__main__'):
 ##    p3 = 10
 ##    p4 = 5E-4
 ##    p5 = 10.0
-##    ps = [40.,50.,1.,1.,2.,20.,20,20,.00,50,13.,50.,0.1,.8,1.,0.1,0.1,1.,
-##          .3,.015,.015,1.0,1.0]
-    ps = [40.,50.,1.,1.,2.,20.,20,20,.00,50,13.,50.,0.1,.8,1.,0.1,0.1,1.,
-          p1,.015,.015,p2,1.0,p3] 
+
     #Now make a new simulation
     sim = Simulation(sim_id,
                      sim_base_path,
@@ -72,27 +69,9 @@ if(__name__ == '__main__'):
 ##     outside_c = 1.04e-4*10**6 #(umol/L) or uM
     #from War-tenberg et al., 2001
 
-    D = 10.0 # um^2/sec
-    consump_rate = 2.0e-20 #mol/cell/sec
-    production_rate = 2.0e-20
-##    outside_c = .1 #umol/L or uM
-    outside_c = 0.0 #umol/L
-    tnf = Gradient("TNF", D, 700.0, 700.0, 700.0, 15, 15, 15,
-                 outside_c = outside_c)
-    #add this to the simulation
-    sim.add_gradient(tnf)
-    lif = Gradient("LIF", D, 700.0, 700.0, 700.0, 15, 15, 15,
-                 outside_c = outside_c)
-    #add this to the simulation
-    sim.add_gradient(lif)
-##    while(True):
-##        print(struct_path)
-##        print(sim_base_path)
-##        print(sim_id)
     #find the only file in the dir
     f = os.listdir(struct_path)
-##    while(True):
-##        print(struct_path + f[0])
+
     #then load this file
     #open the input structure file
     net = nx.read_gpickle(struct_path + f[0])
@@ -102,51 +81,19 @@ if(__name__ == '__main__'):
     np.random.shuffle(nodes)
     id_map = dict()
     for i in range(0, len(nodes)):
-##        if(i % 25 != 0):
         node = nodes[i]
-        #it's a cell
         #randmoize the division set
-        div_set = r.random()*19
-        #make a new sim object out of this
-        #make sure to randomize the division set time
         #so that cells divide at different times
-##        sim_obj = NueronalStemCell(node.location, node.radius, node.ID,
-##                                   "U", division_set = div_set,
-##                                   params = [p1, p2, p3, p4, p5])
-
-
-##        sim_obj = StemCell(node.location, node.radius, node.ID,
-##                           "U", division_set = div_set,
-##                           params = [p1, p2, p3, p4, p5])
-
+        div_set = r.random()*19
+        #now make a new stem cell
         sim_obj = StemCell(node.location, node.radius, node.ID,
-                           "O+N+", division_set = div_set,
-                           params = ps)   
-        #add some gradient values
-        sim_obj.set_gradient_source_sink_coeff(lif.name,
-                                               production_rate,
-                                               0)
-        sim_obj.set_gradient_source_sink_coeff(tnf.name,
-                                               production_rate,
-                                               production_rate/2.)
+                           "U", division_set = div_set,
+                           params = [p1, p2, p3, p4, p5])
         #keep track fo the ID dict for the connection mapping
         id_map[node.ID] = sim_obj
         #add it to the sim
         sim.add(sim_obj)
-##        else:
-##            #you are a microparticle
-##            node = nodes[i]
-##            #it's a cell
-##            #make a new sim object out of this
-##            #make sure to randomize the division set time
-##            #so that cells divide at different times
-##            sim_obj = Microparticle(node.location, node.radius, node.ID)
-##            #add some gradient values
-##            sim_obj.set_gradient_source_sink_coeff(X.name, 200*consump_rate, 0)
-##            #keep track fo the ID dict for the connection mapping
-##            id_map[node.ID] = sim_obj
-##            #add it to the sim
-##            sim.add(sim_obj)
+
     #also import the connections to use as well
     cons = net.edges()
     for i in range(0, len(cons)):
@@ -156,7 +103,6 @@ if(__name__ == '__main__'):
         s2 = id_map[n2.ID]
         sim.network.add_edge(s1, s2)
     #Run the simulation
-
     sim.run()
     #set the seperator
     if(platform.system() == "Windows"):
