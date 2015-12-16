@@ -193,17 +193,12 @@ class Gradient(object):
         t = 0
         epsilon = 1E-10
         diff = epsilon  * 2
-        zeros = np.zeros(self.Ci.shape)
         while(t <= t_end and diff >= epsilon):
             #solve for the gradients in each direction
-            l_x = ndimage.convolve(self.Ci, self._lx, mode = "constant",
-                                   cval = self._c_out)
-            l_y = ndimage.convolve(self.Ci, self._ly, mode = "constant",
-                                   cval = self._c_out)
-            l_z = ndimage.convolve(self.Ci, self._lz, mode = "constant",
+            l_xyz = ndimage.convolve(self.Ci, self._l, mode = "constant",
                                    cval = self._c_out)
             #first diffusion
-            self.C = self.Ci + (l_x + l_y + l_z)*self._D*self.dt
+            self.C = self.Ci + (l_xyz)*self._D*self.dt
             #MUST BE normalized by unit VOLUME
             temp_sink = (-sink*self.dt) / self._grid_vol
             temp_source = source*self.dt / self._grid_vol
