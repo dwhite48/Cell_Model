@@ -63,7 +63,8 @@ class Gradient(object):
         self._lx = np.array([[[0,0,0],[0,0,0],[0,0,0]],
                     [[0,0,0],[1./dx2,-2./(dx2),1./dx2],[0,0,0]],
                     [[0,0,0],[0,0,0],[0,0,0]]])
-
+        #make the 3D kernel
+        self._l = self._lx + self._ly + self._lz
 
     def set_initial_conditions(self, mask):
         """ Will set the inital conditions everywhere a zero exsists
